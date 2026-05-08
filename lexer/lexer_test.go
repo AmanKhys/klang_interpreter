@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"fmt"
 	"klang/token"
 	"testing"
 )
@@ -62,6 +63,7 @@ func TestNextToken(t *testing.T) {
 		tok := l.NextToken()
 
 		if tok.Type != tt.expectedType {
+			fmt.Printf("%v: %dth token", tok, i)
 			t.Fatalf("TESTS[%d] - token type wrong, expted=%q, got=%q", i, tt.expectedType, tok.Type)
 		}
 

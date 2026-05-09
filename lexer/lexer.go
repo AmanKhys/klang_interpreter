@@ -1,7 +1,6 @@
 package lexer
 
 import "klang/token"
-import "fmt"
 
 func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
@@ -30,9 +29,7 @@ func (l *Lexer) NextToken() token.Token {
 			ch := l.ch
 			l.readChar()
 			tok = token.Token{Type: token.EQ, Literal: string(ch) + string(l.ch)}
-			fmt.Printf(" current token: %v\n", tok)
 		} else {
-			fmt.Println("Im reaching on else statement")
 			tok = newToken(token.ASSIGN, l.ch)
 		}
 	case ';':

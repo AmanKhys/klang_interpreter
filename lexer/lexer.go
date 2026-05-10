@@ -1,6 +1,6 @@
 package lexer
 
-import "klang/token"
+import "pi/token"
 
 func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}

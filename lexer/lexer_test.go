@@ -2,7 +2,7 @@ package lexer
 
 import (
 	"fmt"
-	"klang/token"
+	"pi/token"
 	"testing"
 )
 

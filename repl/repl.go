@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"klang/lexer"
-	"klang/token"
+	"pi/lexer"
+	"pi/token"
 )
 
 const PROMPT = ">>"

@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"klang/repl"
 	"os"
 	"os/user"
+	"pi/repl"
 )
 
 func main() {

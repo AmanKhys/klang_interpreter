@@ -7,11 +7,18 @@ import (
 	"pi/token"
 )
 
+type (
+	PrefixParseFn func() ast.Expression
+	InfixParseFn  func(ast.Expression) ast.Expression
+)
+
 type Parser struct {
-	l         *lexer.Lexer
-	curToken  token.Token
-	peekToken token.Token
-	errors    []string
+	l              *lexer.Lexer
+	curToken       token.Token
+	peekToken      token.Token
+	errors         []string
+	PrefixParseFns map[token.TokenType]PrefixParseFn
+	InfixParseFns  map[token.TokenType]InfixParseFn
 }
 
 func New(l *lexer.Lexer) *Parser {
@@ -30,6 +37,13 @@ func New(l *lexer.Lexer) *Parser {
 func (p *Parser) nextToken() {
 	p.curToken = p.peekToken
 	p.peekToken = p.l.NextToken()
+}
+
+func (p *Parser) registerPrefix(tokenType token.TokenType, fn PrefixParseFn) {
+	p.PrefixParseFns[tokenType] = fn
+}
+func (p *Parser) registerInfix(tokenType token.TokenType, fn InfixParseFn) {
+	p.InfixParseFns[tokenType] = fn
 }
 
 func (p *Parser) ParseProgram() *ast.Program {

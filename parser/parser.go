@@ -7,6 +7,17 @@ import (
 	"pi/token"
 )
 
+const (
+	_ int = iota
+	LOWEST
+	EQUALS
+	LESSGREATER
+	SUM
+	PRODUCT
+	PREFIX
+	CALL
+)
+
 type (
 	PrefixParseFn func() ast.Expression
 	InfixParseFn  func(ast.Expression) ast.Expression
@@ -30,6 +41,9 @@ func New(l *lexer.Lexer) *Parser {
 	// read two tokens, so curToken and peekToken are both set
 	p.nextToken()
 	p.nextToken()
+
+	p.PrefixParseFns = make(map[token.TokenType]PrefixParseFn)
+	p.registerPrefix(token.IDENT, p.parseIdentifier)
 
 	return p
 }
@@ -68,7 +82,7 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseReturnStatement()
 
 	default:
-		return nil
+		return p.parseExpressionStatement()
 	}
 }
 
@@ -130,4 +144,26 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	}
 	return stmt
 
+}
+
+func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
+	stmt := &ast.ExpressionStatement{Token: p.curToken}
+	stmt.Expression = p.parseExpression(LOWEST)
+	if p.peekTokenIs(token.SEMICOLON) {
+		p.nextToken()
+	}
+	return stmt
+}
+
+func (p *Parser) parseExpression(precedence int) ast.Expression {
+	prefix := p.PrefixParseFns[p.curToken.Type]
+	if prefix == nil {
+		return nil
+	}
+	leftExp := prefix()
+	return leftExp
+}
+
+func (p *Parser) parseIdentifier() ast.Expression {
+	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 }
